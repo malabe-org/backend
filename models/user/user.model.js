@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require('validator').default;
+const jwt = require('jsonwebtoken');
+const { jwtSecretKey } = require('../../config');
 const { userRoles } = require('../../config/role')
 const { hashPassword, validatePassword } = require('../../utils/helpers');
 
@@ -87,6 +89,12 @@ const userSchema = new mongoose.Schema({
         index: true,
         default: true
     },
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }],
     hasAccess: {
         type: Boolean,
         default: false
@@ -108,10 +116,10 @@ const userSchema = new mongoose.Schema({
     },
 })
 
-userSchema.statics.findByCredentials = async(phone, password) => {
-    const user = await User.findOne({ phone: phone })
+userSchema.statics.findByCredentials = async(phone, email, password) => {
+    const user = await User.findOne({ $or: [{ email: email }, { phone: phone }] })
     if (!user) {
-        throw new Error('Invalid phone number')
+        throw new Error('Invalid user information')
     }
     const isMatch = await validatePassword(password, user.password)
     if (!isMatch) {
@@ -120,6 +128,19 @@ userSchema.statics.findByCredentials = async(phone, password) => {
     return user
 }
 
+userSchema.methods.generateAuthToken = async function() {
+    const user = this
+    const token = jwt.sign({ _id: user._id.toString() }, jwtSecretKey)
+    user.tokens = user.tokens.concat({ token })
+    await user.save()
+
+    return token
+}
+
+userSchema.methods.userProfile = function() {
+    const { password, tokens, __v, ...user } = this._doc;
+    return user;
+}
 
 userSchema.pre('save', async function(next) {
     const user = this
