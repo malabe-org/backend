@@ -1,0 +1,28 @@
+image : node:16.8.0
+
+
+pipelines:
+  branches:
+   develop:
+      - step:
+          name: 'Malabe backend app build'
+          caches:
+            - node
+          script:
+            - npm install --quiet
+      - step:
+          name: 'Create zip'
+          script:
+            - git archive --format=tar.gz develop -o application.tar.gz
+          artifacts:
+            - application.tar.gz
+      - step:
+          name: 'Deploy to Heroku in production'
+          deployment: production
+          script:
+            - pipe: atlassian/heroku-deploy:0.1.1
+              variables:
+                HEROKU_API_KEY: 8653e7b9-4f87-4ba0-a203-5474a5492ccc
+                HEROKU_APP_NAME: malabe-backend
+                ZIP_FILE: "application.tar.gz"
+
