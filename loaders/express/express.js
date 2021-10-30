@@ -1,5 +1,6 @@
 const express = require('express');
-const initRoutes = require('../../api/routes/routes.js');
+const cors = require('cors');
+const initRoutes = require('../../api/routes/routes');
 
 const app = express()
 
@@ -8,7 +9,7 @@ app.use(express.urlencoded({
     extended: true
 }))
 
-initRoutes(app)
-
+app.use(cors());
+initRoutes(app);
 
 module.exports = app
