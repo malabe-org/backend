@@ -4,6 +4,7 @@ const path = require('path');
 module.exports = (app) => {
     // user routes
     app.use('/api/users', require('../controllers/user'));
+    app.use('/api/request', require('../controllers/request'));
     app.use('/api/treatment', require('../controllers/treatment'));
 
 

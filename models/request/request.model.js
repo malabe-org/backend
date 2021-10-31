@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const validator = require('validator').default;
-const jwt = require('jsonwebtoken');
 const { jwtSecretKey } = require('../../config');
 const { userRoles } = require('../../config/role');
 
