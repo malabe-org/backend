@@ -22,7 +22,21 @@ exports.createTreatment = async(req, res) => {
         handleError(error, res);
         return;
     }
-}
+};
+
+exports.getAllTreatments = async(req, res) => {
+    logger.info(`------TREATMENT.GET.ALL--------BEGIN`);
+    try {
+        const treatments = await Treatment.find().populate({ path: 'phUser', select: "firstname lastname email phone " })
+        logger.info(`------TREATMENT.GET.ALL--------BEGIN`);
+        return res.status(200).send({
+            allTreatments: treatments
+        })
+    } catch (error) {
+        handleErrror(error, res)
+        return;
+    }
+};
 
 
 const getOnePhUser = function(phUserArray) {
