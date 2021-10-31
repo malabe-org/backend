@@ -1,7 +1,14 @@
 const logger = require("../../../utils/logger");
 const User = require("../../../models/user/user.model");
-const { handleError } = require("../../../utils/error")
+const { handleError } = require("../../../utils/error");
 
+
+exports.me = async(req, res) => {
+    logger.info(`-----USER.ME------- BEGIN`);
+    const user = req.user.userProfile();
+    logger.info(`-----USER.ME------- SUCCESS --USERID: ${user._id}`);
+    res.send(user);
+};
 
 exports.login = async(req, res) => {
     logger.info(`------USER.LOGIN--------BEGIN`);

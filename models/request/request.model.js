@@ -5,10 +5,31 @@ const { jwtSecretKey } = require('../../config');
 const { userRoles } = require('../../config/role');
 
 const requestSchema = new mongoose.Schema({
-    document: {
-        cniDocCopy: {
+
+    seeker: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+        index: true,
+    },
+    treatment: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Treatment",
+        index: true,
+    },
+    documents: {
+        cniCopy: {
             type: String,
+            required: true,
         },
+        receipt: {
+            type: String,
+            required: true,
+        },
+        seekerPhoto: {
+            type: String,
+            required: true,
+        }
     },
     created_at: {
         type: Date,
@@ -19,3 +40,7 @@ const requestSchema = new mongoose.Schema({
         default: Date
     },
 });
+
+const Request = mongoose.model("Request", requestSchema)
+
+module.exports = Request;
