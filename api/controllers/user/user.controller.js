@@ -37,9 +37,16 @@ exports.signup = async(req, res) => {
         }
         const newUser = new User({...req.body })
         await newUser.save();
-        await newUser.generateAuthToken();
+        const token = await newUser.generateAuthToken();
         logger.info(`------USER.SIGNUP--------SUCCESS`);
-        return res.status(201).json("User added successfully !");
+        return res.status(201).send({
+            userId: newUser._id,
+            firstname: newUser.firstname,
+            lastname: newUser.lastname,
+            role: newUser.role,
+            token,
+            isFirstConnection: newUser.isFirstConnection,
+        });
 
     } catch (error) {
         handleError(error, res);
@@ -51,9 +58,11 @@ exports.signup = async(req, res) => {
 exports.logout = async(req, res) => {
     logger.info(`-----USER.LOGOUT------- BEGIN`);
     try {
-        logger.info(`User = ${req.user}`)
+        console.log({ req })
         req.user.tokens = req.user.tokens.filter(
-            (token) => token.token !== req.token
+            (token) => {
+                token.token !== req.token
+            }
         );
         await req.user.save();
         res.send({ message: "User successfully logged out" });

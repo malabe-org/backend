@@ -1,16 +1,15 @@
-const jwt = require('jsonwebtoken')
-const User = require('../../models/user/user.model')
-const { jwtSecretKey } = require('../../config')
+const jwt = require('jsonwebtoken');
+const User = require('../../models/user/user.model');
+const { jwtSecretKey } = require('../../config');
 const logger = require("../../utils/logger");
 
 const isAuth = async(req, res, next) => {
     try {
         const token = req.header('Authorization').replace('Bearer', '')
-        logger.info(`token : ${token}`)
+        logger.info({ token })
         const decoded = jwt.verify(token, jwtSecretKey)
-        logger.info("decoded")
+        logger.info({ decoded })
         let user = await User.findOne({ '_id': decoded._id, 'tokens.token': token })
-        console.log(`User ${token}`)
         if (!user) {
             return res.status(401).send("Token error")
         }
@@ -18,7 +17,7 @@ const isAuth = async(req, res, next) => {
         req.user = user
         next()
     } catch (error) {
-        return res.status(401).send({ error: 'Please authenticate' })
+        return res.status(401).send({ error })
     }
 }
 

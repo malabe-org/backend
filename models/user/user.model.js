@@ -74,13 +74,13 @@ const userSchema = new mongoose.Schema({
     }],
     gender: {
         type: String,
-        enum: ["M", "Mme"],
+        enum: ["Male", "Female"],
         required: true,
         index: true,
-        default: "M",
+        default: "Male",
         validate(value) {
-            if (!(value.toLowerCase() == "m" || value.toLowerCase() == "mme")) {
-                throw new Error("Gender should be M or Mme")
+            if (!(value.toLowerCase() == "male" || value.toLowerCase() == "female")) {
+                throw new Error("Gender should be Male or Female")
             }
         }
     },
@@ -130,7 +130,7 @@ userSchema.statics.findByCredentials = async(phone, email, password) => {
 
 userSchema.methods.generateAuthToken = async function() {
     const user = this
-    const token = jwt.sign({ _id: user._id.toString() }, jwtSecretKey)
+    const token = jwt.sign({ _id: user._id.toString() }, jwtSecretKey, { expiresIn: '24d' })
     user.tokens = user.tokens.concat({ token })
     await user.save()
 
