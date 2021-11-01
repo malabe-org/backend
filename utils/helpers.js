@@ -7,3 +7,8 @@ exports.hashPassword = async(password) => {
 exports.validatePassword = async(plainPassword, hashedPassword) => {
     return await bcrypt.compare(plainPassword, hashedPassword);
 };
+
+exports.getOneElement = async(userArray) => {
+    const list = [...userArray]
+    return list[Math.floor(Math.random() * list.length)];
+}

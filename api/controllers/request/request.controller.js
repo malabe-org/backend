@@ -4,11 +4,10 @@ const User = require("../../../models/user/user.model");
 const Treatment = require("../../../models/treatment/treatment.model");
 const { userRoles } = require('../../../config/role');
 const { handleError } = require("../../../utils/error");
+const { getOneElement } = require("../../../utils/helpers");
 
 exports.create = async(req, res) => {
     logger.info(`------REQUEST.CREATE--------BEGIN`);
-    console.log({ body: req.body })
-    console.log('file request ' + req.files)
     const cniCopyPath = `/static/uploads/documents/cni` + req.files.cniFile
     const receiptPath = `/static/uploads/documents/receipt` + req.files.receiptFile
     const seekerPhotoPath = `/static/uploads/documents/seekerPhotos` + req.files.seekerPhoto
@@ -16,10 +15,20 @@ exports.create = async(req, res) => {
         return res.status(400).send('No files were uploaded.');
     }
     try {
+        const phUsers = await User.find({ role: userRoles.PHUSER })
+        if (phUsers.length > 0) {
+            const selectedPhUser = await getOneElement(phUsers)
+            console.log(selectedPhUser.id)
+            logger.info(`------TREATMENT.CREATE--------selected: ${selectedPhUser._id}`);
+            var newTreatment = await new Treatment({ phUser: selectedPhUser._id });
+            await newTreatment.save();
+            logger.info(`------TREATMENT.CREATE--------SUCCESSFULLY`);
+        }
         const seekerExist = await User.findById(req.body.userId)
         if (!seekerExist) return res.status(400).json('There is no seeker with this id !');
         const newRequest = new Request({
             seeker: req.body.userId,
+            treatment: newTreatment,
             documents: {
                 cniCopy: cniCopyPath,
                 receipt: receiptPath,
@@ -30,7 +39,7 @@ exports.create = async(req, res) => {
         logger.info(`------REQUEST.CREATE--------SUCCESS`);
         return res.status(201).send({
             message: 'Request submitted!',
-            seeker: newRequest.seeker,
+            request: newRequest,
         })
     } catch (error) {
         handleError(error, res)
