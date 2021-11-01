@@ -6,14 +6,34 @@ const { userRoles } = require('../../../config/role');
 const { handleError } = require("../../../utils/error");
 const { getOneElement } = require("../../../utils/helpers");
 
+
+/*
+    Create a new treatment for the phUser.
+    Create a new request with the treatment and documents.
+    Send a 201 response with the new request.
+    
+    Args:
+      req: The request object.
+      res: the response object
+    Returns:
+      The request object.
+*/
 exports.create = async(req, res) => {
     logger.info(`------REQUEST.CREATE--------BEGIN`);
+    // It checks if the files are uploaded or not.
     const cniCopyPath = `/static/uploads/documents/cni` + req.files.cniFile
     const receiptPath = `/static/uploads/documents/receipt` + req.files.receiptFile
     const seekerPhotoPath = `/static/uploads/documents/seekerPhotos` + req.files.seekerPhoto
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
+    /*
+    1. First, it finds all the PH users in the database.
+    2. Then, it selects one of them randomly.
+    3. Then, it creates a new treatment with the selected PH user.
+    4. Then, it creates a new request with the selected PH user.
+    5. Finally, it returns the newly created request.
+    */
     try {
         const phUsers = await User.find({ role: userRoles.PHUSER })
         if (phUsers.length > 0) {
