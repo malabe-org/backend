@@ -24,10 +24,10 @@ exports.create = async(req, res) => {
             logger.info(`------TREATMENT.CREATE--------SUCCESSFULLY`);
         }
         logger.info(`------REQUEST.CREATION--------BEGIN`);
-        const seekerExist = await User.findById(req.body.userId)
+        const seekerExist = await User.findById(req.user._id)
         if (!seekerExist) return res.status(400).json('There is no seeker with this id !');
         const newRequest = new Request({
-            seeker: req.body.userId,
+            seeker: req.user._id,
             treatment: newTreatment,
             documents: {
                 cniCopy: cniCopyPath,
@@ -62,6 +62,21 @@ exports.getById = async(req, res) => {
     }
 };
 
+
+/*
+Find all requests for a seeker by seeker id.
+
+Args:
+  req: The request object.
+  res: the response object
+Returns:
+  An array of objects containing the request data.
+*/
+/*
+1. First, it’s using the Request model to find all the requests that have the seeker id of the user that is currently logged in.
+2. Then, it’s using the populate method to populate the seeker field with the seeker’s firstname, lastname and phone.
+3. Finally, it’s sending the request back to the client.
+*/
 exports.getBySeeeker = async(req, res) => {
     logger.info(`------REQUEST.GET.BY.SEEKER--------BEGIN`);
     try {
@@ -71,6 +86,46 @@ exports.getBySeeeker = async(req, res) => {
         if (!request) return res.status(400).json('There is no request for this seeker !')
         logger.info(`------REQUEST.GET.BY.SEEKER--------SUCCESS`);
         return res.status(200).send({ request })
+    } catch (error) {
+        handleError(error, res);
+        return;
+    }
+}
+
+
+/*
+Get all requests for a phuser.
+
+Args:
+  req: The request object.
+  res: the response object
+Returns:
+  The current request and all requests for the current user.
+
+1. First, it finds all the treatments that are associated with the current phUser.
+2. Then, it finds the request associated with each of the treatments.
+3. Finally, it returns the first request in the list of requests.
+*/
+exports.getForPhUSer = async(req, res) => {
+    logger.info(`------REQUEST.GET.FOR.PHUSER--------BEGIN`);
+    const phUserId = await req.user._id
+    var requestList = []
+    try {
+        const phUserTreatments = await Treatment.find({ phUser: phUserId });
+        for (let i = 0; i < phUserTreatments.length; i++) {
+            let treatmentRequest = await Request
+                .findOne({ treatment: phUserTreatments[i]._id })
+                .populate("treatment", "decision openDate closeDate")
+                .populate("seeker", "firstname lastname phone email");
+            if (treatmentRequest) {
+                requestList.push(treatmentRequest)
+            }
+        }
+        logger.info(`------REQUEST.GET.FOR.PHUSER--------SUCCESS`);
+        return res.status(200).send({
+            currentRequest: requestList[0],
+            allRequests: requestList,
+        })
     } catch (error) {
         handleError(error, res);
         return;
