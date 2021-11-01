@@ -4,6 +4,15 @@ const { handleError } = require("../../../utils/error");
 const { userRoles } = require("../../../config/role");
 
 
+/*
+The `me` route is a GET request that returns the user's profile.
+
+Args:
+  req: The request object.
+  res: The response object.
+Returns:
+  The user object.
+*/
 exports.me = async(req, res) => {
     logger.info(`-----USER.ME------- BEGIN`);
     const user = req.user.userProfile();
