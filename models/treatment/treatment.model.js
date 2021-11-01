@@ -13,6 +13,10 @@ const treatmentSchema = new mongoose.Schema({
         type: Date,
         default: Date,
     },
+    isOpen: {
+        type: Boolean,
+        default: false
+    },
     closeDate: {
         type: Date,
         default: Date,
@@ -23,7 +27,7 @@ const treatmentSchema = new mongoose.Schema({
         default: "Untreated",
         validate(value) {
             if (!(value.toLowerCase() == "ok" || value.toLowerCase() == "no-ok" || value.toLowerCase() == "untreated")) {
-                throw new Error("Gender should be OK or No-OK")
+                throw new Error("Decision should be OK or No-OK")
             }
         }
     },
