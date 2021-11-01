@@ -3,3 +3,7 @@ package-lock.json
 node_modules
 
 .env
+
+public/uploads/documents
+
+public
