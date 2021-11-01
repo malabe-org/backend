@@ -1,3 +1,4 @@
+"use strict";
 const express = require('express');
 const path = require('path');
 
@@ -20,6 +21,11 @@ module.exports = (app) => {
     app.get('/', (req, res) => {
         return res.status(200).json('Hello Sen Diabète');
     })
+
+
+    app.use((err, req, res, next) => {
+        handleError(err, res);
+    });
 
     app.route('/*').get((req, res) => {
         // TODO('Redirection of all other routes')

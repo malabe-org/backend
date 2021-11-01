@@ -1,8 +1,19 @@
 const jwt = require('jsonwebtoken');
 const User = require('../../models/user/user.model');
 const { jwtSecretKey } = require('../../config');
-const logger = require("../../utils/logger");
+const roles = require('../../config/role')
+var composable = require('composable-middleware')
 
+/*
+The isAuth function is a middleware function that checks if the user is authenticated.
+
+Args:
+  req: The request object.
+  res: The response object.
+  next: The next middleware function in the chain.
+Returns:
+  The user object is being returned.
+*/
 const isAuth = async(req, res, next) => {
     try {
         const token = await req.headers.authorization.split(' ')[1];
@@ -19,6 +30,33 @@ const isAuth = async(req, res, next) => {
     }
 }
 
+
+/*
+The `hasRole` middleware will check if the user has the required role. 
+If the user has the required role, the middleware will call the next middleware in the chain. 
+If the user does not have the required role, the middleware will send a 401 response.
+
+Args:
+  req: The request object.
+  res: The response object.
+  next: The next middleware function in the chain.
+Returns:
+  A middleware function
+*/
+const hasRole = (requiredRole) => {
+    if (!requiredRole) throw new Error('Required role needs to be set');
+    return composable()
+        .use(function(req, res, next) {
+            isAuth(req, res, next);
+        })
+        .use(function meetRequirements(req, res, next) {
+            if ((roles.userRoles.indexOf(req.user.role) === roles.userRoles.indexOf(requiredRole))) {
+                return next();
+            } else res.status(401).send({ error: 'Forbiden' });
+        })
+}
+
 module.exports = {
     isAuth,
+    hasRole,
 }
