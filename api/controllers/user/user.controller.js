@@ -94,3 +94,28 @@ exports.getAllPhUsers = async(req, res) => {
         return;
     }
 }
+
+/*
+1. First, it imports the User model from the models folder.
+2. Then, it creates a new User instance and calls the find method on it.
+3. The find method returns a promise, which is handled by the try block.
+4. The try block checks if the users are found or not.
+5. If the users are found, it sends a response to the client with the users.
+6. If the users are not found, it sends a response to the client with the error.
+7. Finally, it handles the error if any.
+*/
+exports.getSpecificUsers = async(req, res) => {
+    logger.info(`-----USER.GET.SPECIFIC.USERS------- BEGIN`);
+    const role = req.params.role
+    try {
+        const users = await User.find({ role: role });
+        logger.info(`-----USER.GET.SPECIFIC.USERS------- SUCCESS`);
+        return res.status(200).send({
+            role: role,
+            users: users
+        })
+    } catch (error) {
+        handleError(error, res);
+        return;
+    }
+}
