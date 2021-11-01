@@ -4,6 +4,4 @@ node_modules
 
 .env
 
-public/uploads/documents
-
-public
+documents
