@@ -22,7 +22,7 @@ const treatmentSchema = new mongoose.Schema({
         enum: ["Untreated", "OK", "No-OK"],
         default: "Untreated",
         validate(value) {
-            if (!(value.toLowerCase() == "ok" || value.toLowerCase() == "no-ok")) {
+            if (!(value.toLowerCase() == "ok" || value.toLowerCase() == "no-ok" || value.toLowerCase() == "untreated")) {
                 throw new Error("Gender should be OK or No-OK")
             }
         }

@@ -66,7 +66,6 @@ exports.signup = async(req, res) => {
 exports.logout = async(req, res) => {
     logger.info(`-----USER.LOGOUT------- BEGIN`);
     try {
-        console.log({ req })
         req.user.tokens = req.user.tokens.filter(
             (token) => {
                 token.token !== req.token

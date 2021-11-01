@@ -5,10 +5,8 @@ const logger = require("../../utils/logger");
 
 const isAuth = async(req, res, next) => {
     try {
-        const token = req.header('Authorization').replace('Bearer', '')
-        logger.info({ token })
+        const token = await req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, jwtSecretKey)
-        logger.info({ decoded })
         let user = await User.findOne({ '_id': decoded._id, 'tokens.token': token })
         if (!user) {
             return res.status(401).send("Token error")
@@ -17,7 +15,7 @@ const isAuth = async(req, res, next) => {
         req.user = user
         next()
     } catch (error) {
-        return res.status(401).send({ error })
+        return res.status(401).send({ error: 'Please authenticate' })
     }
 }
 

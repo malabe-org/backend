@@ -18,12 +18,12 @@ exports.create = async(req, res) => {
         const phUsers = await User.find({ role: userRoles.PHUSER })
         if (phUsers.length > 0) {
             const selectedPhUser = await getOneElement(phUsers)
-            console.log(selectedPhUser.id)
-            logger.info(`------TREATMENT.CREATE--------selected: ${selectedPhUser._id}`);
+            logger.info(`------TREATMENT.CREATE--------selectedPhUser: ${selectedPhUser._id}`);
             var newTreatment = await new Treatment({ phUser: selectedPhUser._id });
             await newTreatment.save();
             logger.info(`------TREATMENT.CREATE--------SUCCESSFULLY`);
         }
+        logger.info(`------REQUEST.CREATION--------BEGIN`);
         const seekerExist = await User.findById(req.body.userId)
         if (!seekerExist) return res.status(400).json('There is no seeker with this id !');
         const newRequest = new Request({
