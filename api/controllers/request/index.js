@@ -6,7 +6,7 @@ const { userRoles } = require('../../../config/role');
 const requestController = require('./request.controller');
 const upload = multer.uploadFile('documents');
 
-router.post("/create", upload.any('documents'), requestController.create);
+router.post("/create", auth.isAuth, auth.isSeeker, upload.any('documents'), requestController.create);
 router.get('/for_phuser', auth.isAuth, auth.isPhUser, requestController.getForPhUSer);
 router.get('/seeker/:id', auth.isAuth, auth.isSeeker, requestController.getBySeeeker);
 router.get('/:id', auth.isAuth, requestController.getById);
