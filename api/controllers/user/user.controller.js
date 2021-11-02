@@ -138,3 +138,71 @@ exports.getSpecificUsers = async(req, res) => {
         return;
     }
 }
+
+
+/*
+The updateUser function is used to update a user's information.
+
+Args:
+  req: The request object.
+  res: the response object that we use to send back the response to the client.
+Returns:
+  The user object is being returned.
+*/
+
+exports.updateUser = async(req, res) => {
+    logger.info(`-----USER.UPDATE.USER------- BEGIN`);
+    const userId = req.user._id;
+    try {
+        let user = await User.findById(userId)
+        if (!user) return res.status(404).send({ message: "User not found !" })
+        const updates = Object.keys(req.body);
+        const allowedUpdates = ["firstname", "lastname", "email", "phone", "password", "cni", "isFirstConnection"];
+        const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+        if (!isValidOperation) return res.status(409).send({ message: "There are informations that can't be updated !" });
+        updates.forEach((update) => (user[update] = req.body[update]));
+        await user.save();
+        logger.info(`-----USER.UPDATE.USER------- SUCCESS`);
+        return res.status(201).send({
+            message: "User updated successfully !",
+            user: user
+        });
+    } catch (error) {
+        handleError(error, res);
+        return;
+    }
+}
+
+
+/*
+We first check if the user exists by using the findById method.
+
+Args:
+  req: The request object.
+  res: The response object that will be sent back to the client.
+Returns:
+  The user object is being returned.
+*/
+
+exports.updateUserWithId = async(req, res) => {
+    logger.info(`-----USER.UPDATE.USER------- BEGIN`);
+    const userId = req.params.id;
+    try {
+        let user = await User.findById(userId)
+        if (!user) return res.status(404).send({ message: "User not found !" })
+        const updates = Object.keys(req.body);
+        const allowedUpdates = ["firstname", "lastname", "email", "phone", "password", "cni", "isFirstConnection", "address"];
+        const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+        if (!isValidOperation) return res.status(409).send({ message: "There are informations that can't be updated !" });
+        updates.forEach((update) => (user[update] = req.body[update]));
+        await user.save();
+        logger.info(`-----USER.UPDATE.USER------- SUCCESS`);
+        return res.status(201).send({
+            message: "User updated successfully !",
+            user: user
+        });
+    } catch (error) {
+        handleError(error, res);
+        return;
+    }
+}
