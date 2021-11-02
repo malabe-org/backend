@@ -138,7 +138,7 @@ userSchema.methods.generateAuthToken = async function() {
 }
 
 userSchema.methods.userProfile = function() {
-    const { password, tokens, __v, ...user } = this._doc;
+    const { tokens, __v, ...user } = this._doc;
     return user;
 }
 
