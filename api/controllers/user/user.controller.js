@@ -4,6 +4,28 @@ const { handleError } = require("../../../utils/error");
 const { userRoles } = require("../../../config/role");
 
 
+
+/*
+Get all users
+Args:
+  req: The request object.
+  res: The response object.
+Returns:
+  An array of all the users in the database.
+*/
+exports.getAllUsers = async(req, res) => {
+    logger.info(`-----USER.GET.ALL.USERS------- BEGIN`);
+    try {
+        const users = await User.find()
+        logger.info(`-----USER.GET.ALL.USERS------- SUCCESS`);
+        return res.status(200).send({ users: users })
+    } catch (error) {
+        handleError(error, res);
+        return;
+    }
+}
+
+
 /*
 The `me` route is a GET request that returns the user's profile.
 
@@ -111,27 +133,6 @@ exports.getSpecificUsers = async(req, res) => {
             role: role,
             users: users
         })
-    } catch (error) {
-        handleError(error, res);
-        return;
-    }
-}
-
-
-/*
-Get all users
-Args:
-  req: The request object.
-  res: The response object.
-Returns:
-  An array of all the users in the database.
-*/
-exports.getAllUsers = async(req, res) => {
-    logger.info(`-----USER.GET.ALL.USERS------- BEGIN`);
-    try {
-        const users = await User.find()
-        logger.info(`-----USER.GET.ALL.USERS------- SUCCESS`);
-        return res.status(200).send({ users: users })
     } catch (error) {
         handleError(error, res);
         return;
