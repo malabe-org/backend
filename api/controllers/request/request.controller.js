@@ -4,7 +4,7 @@ const User = require("../../../models/user/user.model");
 const Treatment = require("../../../models/treatment/treatment.model");
 const { userRoles } = require('../../../config/role');
 const { handleError } = require("../../../utils/error");
-const { getOneElement } = require("../../../utils/helpers");
+const { intersectionArray, differenceArray, getOneElement } = require("../../../utils/helpers");
 
 
 /*
@@ -20,32 +20,47 @@ const { getOneElement } = require("../../../utils/helpers");
 */
 exports.create = async(req, res) => {
     logger.info(`------REQUEST.CREATE--------BEGIN`);
-    // It checks if the files are uploaded or not.
     const cniCopyPath = `/static/uploads/documents/cni` + req.files.cniFile
     const receiptPath = `/static/uploads/documents/receipt` + req.files.receiptFile
     const seekerPhotoPath = `/static/uploads/documents/seekerPhotos` + req.files.seekerPhoto
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
-    /*
-    1. First, it finds all the PH users in the database.
-    2. Then, it selects one of them randomly.
-    3. Then, it creates a new treatment with the selected PH user.
-    4. Then, it creates a new request with the selected PH user.
-    5. Finally, it returns the newly created request.
-    */
+    const seekerExist = await User.findById(req.user._id)
+    if (!seekerExist) return res.status(400).json('There is no seeker with this id !');
     try {
-        const phUsers = await User.find({ role: userRoles.PHUSER })
+        /*
+        1. Find all PH users that have no untreated request
+        2. Find all PH users that have untreated request
+        3. Find all requests that are untreated
+        4. Priority => condition 1 = Select a PH user that has no untreated request
+        5. if condition 1 is not completed => Select a PH user that has untreated request
+        6. Create a new treatment object
+        7. It creates a new Request object and passes in the seeker, treatment, and documents.
+        8. It saves the new Request object to the database.
+        9. It returns a 201 status code and sends the new Request object back to the client.
+        */
+        let phUsers = await User.find({ role: userRoles.PHUSER }).select("_id");
+        phUsers = phUsers.map(elem => elem._id.toString())
+        const allRequests = await Request.find()
+            .populate("treatment", "phUser decision reason")
+            .select("treatment seeker")
+        let allRequestsUntreated = [...allRequests]
+            .filter(elem => elem.treatment.decision == "Untreated")
+            .map(elem => elem.treatment.phUser.toString());
+        var newTreatment;
         if (phUsers.length > 0) {
-            const selectedPhUser = await getOneElement(phUsers)
-            logger.info(`------TREATMENT.CREATE--------selectedPhUser: ${selectedPhUser._id}`);
-            var newTreatment = await new Treatment({ phUser: selectedPhUser._id });
-            await newTreatment.save();
-            logger.info(`------TREATMENT.CREATE--------SUCCESSFULLY`);
+            var phUsers_with_no_untreated_request = differenceArray(phUsers, allRequestsUntreated);
+            var phUsers_with_untreated_request = intersectionArray(phUsers, allRequestsUntreated);
+            const selectedPhUser = await getOneElement(phUsers_with_no_untreated_request) || await getOneElement(phUsers_with_untreated_request)
+            logger.info(`------TREATMENT.CREATE--------selectedPhUser: ${selectedPhUser}`);
+            newTreatment = await new Treatment({ phUser: selectedPhUser });
+        } else {
+            logger.info(`------TREATMENT.CREATE--------WITHOUT.PHUSER`);
+            newTreatment = await new Treatment()
         }
-        logger.info(`------REQUEST.CREATION--------BEGIN`);
-        const seekerExist = await User.findById(req.user._id)
-        if (!seekerExist) return res.status(400).json('There is no seeker with this id !');
+        logger.info(`------TREATMENT.CREATE--------SUCCESSFULLY`);
+        await newTreatment.save();
         const newRequest = new Request({
             seeker: req.user._id,
             treatment: newTreatment,
@@ -67,6 +82,16 @@ exports.create = async(req, res) => {
     }
 }
 
+
+
+
+/*
+Args:
+  req: The request object.
+  res: the response object
+Returns:
+  The request object
+*/
 exports.getById = async(req, res) => {
     logger.info(`------REQUEST.GET.BY.ID--------BEGIN`);
     try {
@@ -81,6 +106,7 @@ exports.getById = async(req, res) => {
         return;
     }
 };
+
 
 
 /*
@@ -149,6 +175,7 @@ exports.getForPhUSer = async(req, res) => {
         return;
     }
 }
+
 
 
 /*
