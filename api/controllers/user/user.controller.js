@@ -20,6 +20,7 @@ exports.me = async(req, res) => {
     res.send(user);
 };
 
+
 exports.login = async(req, res) => {
     logger.info(`------USER.LOGIN--------BEGIN`);
     try {
@@ -43,6 +44,7 @@ exports.login = async(req, res) => {
         return;
     }
 }
+
 
 exports.signup = async(req, res) => {
     logger.info(`------USER.SIGNUP--------BEGIN`);
@@ -90,29 +92,15 @@ exports.logout = async(req, res) => {
 };
 
 
-exports.getAllPhUsers = async(req, res) => {
-    logger.info(`-----USER.GET.ALL.PHUSERS------- BEGIN`);
-    try {
-        const allPhUsers = await User.find({ role: userRoles.PHUSER })
-        logger.info(`-----USER.GET.ALL.PHUSERS------- SUCCESS`);
-        return res.status(200).send({
-            phUsers: allPhUsers
-        });
-    } catch (error) {
-        handleError(error, res);
-        return;
-    }
-}
-
 /*
-1. First, it imports the User model from the models folder.
-2. Then, it creates a new User instance and calls the find method on it.
-3. The find method returns a promise, which is handled by the try block.
-4. The try block checks if the users are found or not.
-5. If the users are found, it sends a response to the client with the users.
-6. If the users are not found, it sends a response to the client with the error.
-7. Finally, it handles the error if any.
+Get specific users
+Args:
+  req: The request object.
+  res: the response object
+Returns:
+  A list of users with the role of the parameter passed in.
 */
+
 exports.getSpecificUsers = async(req, res) => {
     logger.info(`-----USER.GET.SPECIFIC.USERS------- BEGIN`);
     const role = req.params.role
@@ -123,6 +111,27 @@ exports.getSpecificUsers = async(req, res) => {
             role: role,
             users: users
         })
+    } catch (error) {
+        handleError(error, res);
+        return;
+    }
+}
+
+
+/*
+Get all users
+Args:
+  req: The request object.
+  res: The response object.
+Returns:
+  An array of all the users in the database.
+*/
+exports.getAllUsers = async(req, res) => {
+    logger.info(`-----USER.GET.ALL.USERS------- BEGIN`);
+    try {
+        const users = await User.find()
+        logger.info(`-----USER.GET.ALL.USERS------- SUCCESS`);
+        return res.status(200).send({ users: users })
     } catch (error) {
         handleError(error, res);
         return;

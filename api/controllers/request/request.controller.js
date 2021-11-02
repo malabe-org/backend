@@ -151,3 +151,26 @@ exports.getForPhUSer = async(req, res) => {
         return;
     }
 }
+
+
+/*
+Get all requests for a seeker.
+Args:
+  req: The request object.
+  res: the response object
+Returns:
+  The request object with the treatment object embedded in it.
+*/
+exports.getForSeeker = async(req, res) => {
+    logger.info(`------REQUEST.GET.FOR.SEEKER--------BEGIN`);
+    const seeker_id = await req.user._id
+    try {
+        const request = await Request.find({ seeker: seeker_id }).populate("treatment", "-phUser -_id -__v")
+        logger.info(`------REQUEST.GET.FOR.SEEKER--------SUCCESS`);
+        return res.status(200).send({ requests: request });
+    } catch (error) {
+        handleError(error, res);
+        return;
+    }
+
+}
