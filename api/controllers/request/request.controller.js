@@ -113,18 +113,15 @@ exports.getBySeeeker = async(req, res) => {
 }
 
 
+
 /*
-Get all requests for a phuser.
+Get all the requests for a phUser.
 
 Args:
   req: The request object.
   res: the response object
 Returns:
-  The current request and all requests for the current user.
-
-1. First, it finds all the treatments that are associated with the current phUser.
-2. Then, it finds the request associated with each of the treatments.
-3. Finally, it returns the first request in the list of requests.
+  The current request and all requests.
 */
 exports.getForPhUSer = async(req, res) => {
     logger.info(`------REQUEST.GET.FOR.PHUSER--------BEGIN`);
@@ -136,14 +133,15 @@ exports.getForPhUSer = async(req, res) => {
             let treatmentRequest = await Request
                 .findOne({ treatment: phUserTreatments[i]._id })
                 .populate("treatment", "decision openDate closeDate")
-                .populate("seeker", "firstname lastname phone email");
+                .populate("seeker", "firstname lastname ");
             if (treatmentRequest) {
                 requestList.push(treatmentRequest)
             }
         }
+        const currentRequestUnthread = await requestList.find(elem => elem.treatment.decision == "Untreated")
         logger.info(`------REQUEST.GET.FOR.PHUSER--------SUCCESS`);
         return res.status(200).send({
-            currentRequest: requestList[0],
+            currentRequest: currentRequestUnthread || { message: "No current request" },
             allRequests: requestList,
         })
     } catch (error) {
