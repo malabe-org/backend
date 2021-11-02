@@ -32,31 +32,54 @@ const isAuth = async(req, res, next) => {
 
 
 /*
-The `hasRole` middleware will check if the user has the required role. 
-If the user has the required role, the middleware will call the next middleware in the chain. 
-If the user does not have the required role, the middleware will send a 401 response.
+The isPhUser function checks if the user is a PHUSER. 
+If the user is a PHUSER, the function calls the next() function to move to the next middleware. 
+If the user is not a PHUSER, the function sends a 403 response to the client.
 
 Args:
   req: The request object.
   res: The response object.
   next: The next middleware function in the chain.
 Returns:
-  A middleware function
+  The middleware function is being returned.
 */
-const hasRole = (requiredRole) => {
-    if (!requiredRole) throw new Error('Required role needs to be set');
-    return composable()
-        .use(function(req, res, next) {
-            isAuth(req, res, next);
-        })
-        .use(function meetRequirements(req, res, next) {
-            if ((roles.userRoles.indexOf(req.user.role) === roles.userRoles.indexOf(requiredRole))) {
-                return next();
-            } else res.status(401).send({ error: 'Forbiden' });
-        })
+
+const isPhUser = async(req, res, next) => {
+    if (req.user.role == roles.userRoles.PHUSER) {
+        next()
+    } else {
+        res.status(403).send({ message: "Access denied !" })
+    }
+}
+
+const isSeeker = async(req, res, next) => {
+    if (req.user.role == roles.userRoles.SEEKER) {
+        next()
+    } else {
+        res.status(403).send({ message: "Access denied !" })
+    }
+}
+
+const isAdmin = async(req, res, next) => {
+    if (req.user.role == roles.userRoles.ADMIN) {
+        next()
+    } else {
+        res.status(403).send({ message: "Access denied !" })
+    }
+}
+
+const isDhUser = async(req, res, next) => {
+    if (req.user.role == roles.userRoles.DHUSER) {
+        next()
+    } else {
+        res.status(403).send({ message: "Access denied !" })
+    }
 }
 
 module.exports = {
     isAuth,
-    hasRole,
+    isPhUser,
+    isSeeker,
+    isAdmin,
+    isDhUser
 }

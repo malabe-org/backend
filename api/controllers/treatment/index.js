@@ -6,7 +6,7 @@ const { userRoles } = require('../../../config/role');
 
 router.post('/create', authMiddleware.isAuth, treatmentController.createTreatment);
 router.get('', treatmentController.getAllTreatments);
-router.put('/update/:id', authMiddleware.hasRole(userRoles.PHUSER), treatmentController.updateTreatment);
-router.put('/change_phuser/:id', authMiddleware.hasRole(userRoles.ADMIN), treatmentController.changePhUserTreatment)
+router.put('/update/:id', treatmentController.updateTreatment);
+router.put('/change_phuser/:id', treatmentController.changePhUserTreatment)
 
 module.exports = router;
