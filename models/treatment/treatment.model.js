@@ -21,6 +21,10 @@ const treatmentSchema = new mongoose.Schema({
         type: Date,
         default: Date,
     },
+    isGiven: {
+        type: Boolean,
+        default: false
+    },
     decision: {
         type: String,
         enum: ["Untreated", "OK", "No-OK"],

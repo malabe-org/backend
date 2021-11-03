@@ -63,7 +63,7 @@ exports.updateTreatment = async(req, res) => {
     try {
         const treatmentExists = await Treatment.findById(treatment_id)
         if (!treatmentExists) return res.status(400).json("Treatment not found !");
-        const allowUpdates = ["decision", "openDate", "closeDate", "reason", "updated_at", "isOpen"];
+        const allowUpdates = ["decision", "openDate", "closeDate", "reason", "updated_at", "isOpen", "isGiven"];
         const updates = Object.keys(req.body);
         const isValidOperation = updates.every((update) => allowUpdates.includes(update));
         if (!isValidOperation) return res.status(409).send({ message: "There are informations that can't be modified !" });
