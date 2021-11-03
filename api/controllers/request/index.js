@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const multer = require('../../../utils/multer');
 const auth = require("../../middlewares/auth")
-const { userRoles } = require('../../../config/role');
 const requestController = require('./request.controller');
 const upload = multer.uploadFile('documents');
 

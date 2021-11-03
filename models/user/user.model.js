@@ -97,7 +97,7 @@ const userSchema = new mongoose.Schema({
     }],
     hasAccess: {
         type: Boolean,
-        default: false
+        default: true
     },
     isDeleted: {
         type: Boolean,

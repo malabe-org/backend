@@ -6,6 +6,7 @@ module.exports = (app) => {
     app.use('/api/users', require('../controllers/user'));
     app.use('/api/request', require('../controllers/request'));
     app.use('/api/treatment', require('../controllers/treatment'));
+    app.use('/api/dh_hub', require('../controllers/dhHub'));
 
 
     //CORS config
