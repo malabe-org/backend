@@ -4,7 +4,7 @@
 git clone https://github.com/malabe-org/backend.git
 
 
-### Install dependecies
+### Install dependencies
 npm install
 
 
