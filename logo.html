@@ -40,6 +40,122 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            /* transform: scale(1); */
+        }
+        
+        .sq1 {
+            transform: scale(1);
+            animation: loaderSq1 .85s 1000ms infinite alternate linear;
+        }
+        
+        @keyframes loaderSq1 {
+            0% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(.95);
+            }
+            50% {
+                transform: scale(0.6);
+            }
+            75% {
+                transform: scale(0.4);
+            }
+            100% {
+                transform: scale(0.3);
+            }
+        }
+        
+        .sq2 {
+            transform: scale(1);
+            animation: loaderSq2 .85s 1100ms infinite alternate linear;
+        }
+        
+        @keyframes loaderSq2 {
+            0% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(.95);
+            }
+            50% {
+                transform: scale(0.7);
+            }
+            75% {
+                transform: scale(0.5);
+            }
+            100% {
+                transform: scale(0.3);
+            }
+        }
+        
+        .sq3 {
+            transform: scale(1);
+            animation: loaderSq3 .85s 1300ms infinite alternate linear;
+        }
+        
+        @keyframes loaderSq3 {
+            0% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(.95);
+            }
+            50% {
+                transform: scale(0.6);
+            }
+            75% {
+                transform: scale(0.4);
+            }
+            100% {
+                transform: scale(0.3);
+            }
+        }
+        
+        .sq4 {
+            transform: scale(1);
+            animation: loaderSq4 .85s 1400ms infinite alternate linear;
+        }
+        
+        @keyframes loaderSq4 {
+            0% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(.95);
+            }
+            50% {
+                transform: scale(0.6);
+            }
+            75% {
+                transform: scale(0.4);
+            }
+            100% {
+                transform: scale(0.3);
+            }
+        }
+        
+        .sq5 {
+            transform: scale(1);
+            animation: loaderSq5 .85s 1500ms infinite alternate linear;
+        }
+        
+        @keyframes loaderSq5 {
+            0% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(.95);
+            }
+            50% {
+                transform: scale(0.6);
+            }
+            75% {
+                transform: scale(0.4);
+            }
+            100% {
+                transform: scale(0.3);
+            }
         }
         
         .square img {
@@ -66,29 +182,29 @@
 <body>
     <div class="main">
         <div class="line line1">
-            <div class="square" style="background-color: #1d3f72;">
+            <div class="square sq1" style="background-color: #1d3f72;">
                 <p class="title"></p>
             </div>
-            <div class="square" style="background-color: #5699d2;">
+            <div class="square sq2" style="background-color: #5699d2;">
                 <!-- <img src="./corruption (1).png" alt=""> -->
             </div>
-            <div class="square" style="background-color: #d8ebf9;"></div>
+            <div class="square sq3" style="background-color: #d8ebf9;"></div>
         </div>
         <div class="line line2">
-            <div class="square" style="background-color: #5699d2;">
+            <div class="square sq2" style="background-color: #5699d2;">
                 <!-- <img src="./passport.png" alt=""> -->
             </div>
-            <div class="square" style="background-color: #d8ebf9;">
+            <div class="square sq3" style="background-color: #d8ebf9;">
                 <p class="title" style="color: #1d3f72;"> MALABE</p>
             </div>
-            <div class="square" style="background-color: #71c2cc;">
+            <div class="square sq4" style="background-color: #71c2cc;">
                 <!-- <img src="./safety.png" alt=""> -->
             </div>
         </div>
         <div class="line line3">
-            <div class="square" style="background-color: #d8ebf9;"></div>
-            <div class="square" style="background-color: #71c2cc;"></div>
-            <div class="square" style="background-color: #4996a2;">
+            <div class="square sq3" style="background-color: #d8ebf9;"></div>
+            <div class="square sq4" style="background-color: #71c2cc;"></div>
+            <div class="square sq5" style="background-color: #4996a2;">
                 <p class="title"></p>
             </div>
         </div>
