@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo</title>
+
+    <style>
+        body {
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .main {
+            offset: 0;
+            position: absolute;
+            display: flex;
+            width: 60%;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            vertical-align: baseline;
+        }
+        
+        .line {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 30%;
+        }
+        
+        .square {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .title {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 40pt;
+            color: #d8ebf9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            letter-spacing: 60pt;
+            text-align: center;
+            text-shadow: #b7c0ce 1px 1px 5px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="line line1">
+            <div class="square" style="background-color: #1d3f72;">
+                <p class="title">MA</p>
+            </div>
+            <div class="square" style="background-color: #5699d2;">
+            </div>
+            <div class="square" style="background-color: #d8ebf9;"></div>
+        </div>
+        <div class="line line2">
+            <div class="square" style="background-color: #5699d2;"></div>
+            <div class="square" style="background-color: #d8ebf9;">
+                <p class="title" style="color: #4996a2;">LA</p>
+            </div>
+            <div class="square" style="background-color: #71c2cc;"></div>
+        </div>
+        <div class="line line3">
+            <div class="square" style="background-color: #d8ebf9;"></div>
+            <div class="square" style="background-color: #71c2cc;"></div>
+            <div class="square" style="background-color: #4996a2;">
+                <p class="title">BE</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
