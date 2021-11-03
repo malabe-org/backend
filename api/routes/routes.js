@@ -19,7 +19,7 @@ module.exports = (app) => {
     });
 
     app.get('/', (req, res) => {
-        return res.status(200).json('Hello Sen Diabète');
+        return res.status(200).json('Hello Malabe');
     })
 
 
