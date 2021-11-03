@@ -16,6 +16,9 @@ const requestSchema = new mongoose.Schema({
         ref: "Treatment",
         index: true,
     },
+    description: {
+        type: String,
+    },
     documents: {
         cniCopy: {
             type: String,

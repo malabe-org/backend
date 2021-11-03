@@ -62,6 +62,7 @@ exports.create = async(req, res) => {
         logger.info(`------TREATMENT.CREATE--------SUCCESSFULLY`);
         await newTreatment.save();
         const newRequest = new Request({
+            description: req.body.description || "No description",
             seeker: req.user._id,
             treatment: newTreatment,
             documents: {
