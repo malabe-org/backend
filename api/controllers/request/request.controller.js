@@ -31,9 +31,9 @@ exports.create = async(req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
-    const cniCopyPath = `/static/uploads/documents/cni` + req.files[0].filename
-    const receiptPath = `/static/uploads/documents/receipt` + req.files[1].filename
-    const seekerPhotoPath = `/static/uploads/documents/seekerPhotos` + req.files[2].filename
+    const cniCopyPath = `/static/uploads/documents/` + req.files[0].filename
+    const receiptPath = `/static/uploads/documents/` + req.files[1].filename
+    const seekerPhotoPath = `/static/uploads/documents/` + req.files[2].filename
     const seekerExist = await User.findById(req.user._id)
     if (!seekerExist) return res.status(400).json('There is no seeker with this id !');
     try {
