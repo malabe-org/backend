@@ -27,7 +27,7 @@ exports.create = async(req, res) => {
         logger.info(`------DH.UHSER.CREATE--------SUCCESS`);
         return res.status(201).send({
             message: "DhHub created successfully !",
-            newDhHUb
+            dhHub: newDhHub
         })
     } catch (error) {
         handleError(error, res)
