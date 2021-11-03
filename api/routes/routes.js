@@ -18,6 +18,9 @@ module.exports = (app) => {
         next();
     });
 
+    const publicDirectory = path.join(__dirname, '../../public');
+    app.use('/static', express.static(publicDirectory));
+
     app.get('/', (req, res) => {
         return res.status(200).json('Hello Malabe');
     })
