@@ -16,6 +16,10 @@ const requestSchema = new mongoose.Schema({
         ref: "Treatment",
         index: true,
     },
+    dhHub: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "DhHub"
+    },
     description: {
         type: String,
     },

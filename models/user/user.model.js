@@ -72,6 +72,10 @@ const userSchema = new mongoose.Schema({
         },
 
     }],
+    dhHub: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "DhHub"
+    },
     gender: {
         type: String,
         enum: ["Male", "Female"],

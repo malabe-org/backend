@@ -11,25 +11,6 @@ const { intersectionArray, differenceArray, getOneElement } = require("../../../
     Create a new treatment for the phUser.
     Create a new request with the treatment and documents.
     Send a 201 response with the new request.
-    
-    Args:
-      req: The request object.
-      res: the response object
-    Returns:
-      The request object.
-*/
-exports.create = async(req, res) => {
-    logger.info(`------REQUEST.CREATE--------BEGIN`);
-    const cniCopyPath = `/static/uploads/documents/cni` + req.files.cniFile
-    const receiptPath = `/static/uploads/documents/receipt` + req.files.receiptFile
-    const seekerPhotoPath = `/static/uploads/documents/seekerPhotos` + req.files.seekerPhoto
-    if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(400).send('No files were uploaded.');
-    }
-    const seekerExist = await User.findById(req.user._id)
-    if (!seekerExist) return res.status(400).json('There is no seeker with this id !');
-    try {
-        /*
         1. Find all PH users that have no untreated request
         2. Find all PH users that have untreated request
         3. Find all requests that are untreated
@@ -39,12 +20,29 @@ exports.create = async(req, res) => {
         7. It creates a new Request object and passes in the seeker, treatment, and documents.
         8. It saves the new Request object to the database.
         9. It returns a 201 status code and sends the new Request object back to the client.
-        */
+Args:
+    req: The request object.
+res: the response object
+Returns:
+    The request object.
+*/
+exports.create = async(req, res) => {
+    logger.info(`------REQUEST.CREATE--------BEGIN`);
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('No files were uploaded.');
+    }
+    const cniCopyPath = `/static/uploads/documents/cni` + req.files[0].filename
+    const receiptPath = `/static/uploads/documents/receipt` + req.files[1].filename
+    const seekerPhotoPath = `/static/uploads/documents/seekerPhotos` + req.files[2].filename
+    const seekerExist = await User.findById(req.user._id)
+    if (!seekerExist) return res.status(400).json('There is no seeker with this id !');
+    try {
         let phUsers = await User.find({ role: userRoles.PHUSER }).select("_id");
         phUsers = phUsers.map(elem => elem._id.toString())
         const allRequests = await Request.find()
             .populate("treatment", "phUser decision reason")
-            .select("treatment seeker")
+            .select("treatment seeker");
+        console.log({ allRequests });
         let allRequestsUntreated = [...allRequests]
             .filter(elem => elem.treatment.decision == "Untreated")
             .map(elem => elem.treatment.phUser.toString());
@@ -65,6 +63,7 @@ exports.create = async(req, res) => {
             description: req.body.description || "No description",
             seeker: req.user._id,
             treatment: newTreatment,
+            dhHub: req.body.dhHub,
             documents: {
                 cniCopy: cniCopyPath,
                 receipt: receiptPath,
@@ -191,7 +190,10 @@ exports.getForSeeker = async(req, res) => {
     logger.info(`------REQUEST.GET.FOR.SEEKER--------BEGIN`);
     const seeker_id = await req.user._id
     try {
-        const request = await Request.find({ seeker: seeker_id }).populate("treatment", "-phUser -_id -__v")
+        const request = await Request
+            .find({ seeker: seeker_id })
+            .populate("treatment", "-phUser -_id -__v")
+            .populate("dhHub", "location address");
         logger.info(`------REQUEST.GET.FOR.SEEKER--------SUCCESS`);
         return res.status(200).send({ requests: request });
     } catch (error) {
