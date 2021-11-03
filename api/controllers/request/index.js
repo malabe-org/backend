@@ -9,6 +9,7 @@ router.post("/create", auth.isAuth, auth.isSeeker, upload.any('documents'), requ
 router.get('/for_phuser', auth.isAuth, auth.isPhUser, requestController.getForPhUSer);
 router.get('/for_seeker', auth.isAuth, auth.isSeeker, requestController.getForSeeker);
 router.get('/seeker/:id', auth.isAuth, requestController.getBySeeeker);
+router.get('/dh_hub/:id', auth.isAuth, requestController.getForDHub);
 router.get('/:id', auth.isAuth, requestController.getById);
 
 module.exports = router;

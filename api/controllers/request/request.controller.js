@@ -2,6 +2,7 @@ const logger = require("../../../utils/logger");
 const Request = require("../../../models/request/request.model");
 const User = require("../../../models/user/user.model");
 const Treatment = require("../../../models/treatment/treatment.model");
+const DhHub = require("../../../models/dhHub/dhHub.model");
 const { userRoles } = require('../../../config/role');
 const { handleError } = require("../../../utils/error");
 const { intersectionArray, differenceArray, getOneElement } = require("../../../utils/helpers");
@@ -201,4 +202,27 @@ exports.getForSeeker = async(req, res) => {
         return;
     }
 
+}
+
+
+
+exports.getForDHub = async(req, res) => {
+    logger.info(`------REQUEST.GET.FOR.DHUB --------BEGIN`);
+    const dhub_id = req.params.id
+    try {
+        const dhHubExists = await DhHub.findById(dhub_id)
+        if (!dhHubExists) return res.status(400).send({ message: "DhHub not found!" })
+        const requestForDhHub = await Request
+            .find({ dhHub: dhub_id })
+            .populate("seeker", "-__v -tokens -password -hasAccess -isDeleted ")
+            .populate("treatment", "-__v");
+        logger.info(`------REQUEST.GET.FOR.DHUB --------SUCCESS`);
+        return res.status(200).send({
+            requests: requestForDhHub
+        });
+
+    } catch (error) {
+        handleError(error, res);
+        return;
+    }
 }
