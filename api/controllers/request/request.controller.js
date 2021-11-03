@@ -193,7 +193,7 @@ exports.getForSeeker = async(req, res) => {
     try {
         const request = await Request
             .find({ seeker: seeker_id })
-            .populate("treatment", "-phUser -_id -__v")
+            .populate("treatment", "-phUser -__v")
             .populate("dhHub", "location address");
         logger.info(`------REQUEST.GET.FOR.SEEKER--------SUCCESS`);
         return res.status(200).send({ requests: request });
@@ -206,6 +206,15 @@ exports.getForSeeker = async(req, res) => {
 
 
 
+/*
+Get all requests for a specific dhub.
+
+Args:
+  req: The request object.
+  res: the response object
+Returns:
+  An array of Request objects.
+*/
 exports.getForDHub = async(req, res) => {
     logger.info(`------REQUEST.GET.FOR.DHUB --------BEGIN`);
     const dhub_id = req.params.id
